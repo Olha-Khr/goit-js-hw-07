@@ -5,13 +5,9 @@ import { galleryItems } from './gallery-items.js';
 const refs = {
     gallery: document.querySelector('.gallery'),
 }
-
 let galleryLightBox;
-
 refs.gallery.innerHTML = createGalleryMarkup(galleryItems);
-
 refs.gallery.addEventListener('click', onGalleryItemClick);
-
 function onGalleryItemClick(e) {
     e.preventDefault();
 
@@ -19,7 +15,6 @@ function onGalleryItemClick(e) {
     if (!image.classList.contains('gallery__image')) {
         return;
     }
-    
     const lightboxImage = createImageLightbox(image);
     galleryLightBox = basicLightbox.create(lightboxImage,
         {
@@ -48,11 +43,9 @@ function createGalleryMarkup(items) {
                     </div>`})
         .join('');
 }
-
 function createImageLightbox(image) {
     return `<img src="${image.dataset["source"]}">`;
 }
-
 function onEscPress(e) {
     if (e.code !== 'Escape') {
         return;
