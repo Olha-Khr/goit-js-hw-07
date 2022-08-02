@@ -1,63 +1,61 @@
 import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
-console.log(galleryItems);
-const galleryRef = document.querySelector(".gallery");
 
-galleryRef.innerHTML = addGalleryItemMurkup(galleryItems);
-galleryRef.addEventListener("click", onGalleryImageClick);
-
-function addGalleryItemMurkup(gallery) {
-  return gallery
-    .map((item) => {
-      return `<div class="gallery__item">
-          <a class="gallery__link" href="${item.original}">
-            <img
-              class="gallery__image"
-              src="${item.preview}"
-              data-source="${item.original}"
-              alt="${item.description}"
-            />
-          </a>
-          </div>`;
-    })
-    .join("");
+const refs = {
+    gallery: document.querySelector('.gallery'),
 }
 
-function onGalleryImageClick(e) {
-  e.preventDefault();
+let galleryLightBox;
 
-  const IMG_NODE = e.target.nodeName === "IMG";
+refs.gallery.innerHTML = createGalleryMarkup(galleryItems);
 
-  if (!IMG_NODE) {
-    return;
-  } else {
-    const originalImage = e.target.dataset.source;
-    const popUpImage = createPopUpImageMurkup(originalImage);
+refs.gallery.addEventListener('click', onGalleryItemClick);
 
-    popUpImage.show();
-  }
+function onGalleryItemClick(e) {
+    e.preventDefault();
+
+    const image = e.target;
+    if (!image.classList.contains('gallery__image')) {
+        return;
+    }
+    
+    const lightboxImage = createImageLightbox(image);
+    galleryLightBox = basicLightbox.create(lightboxImage,
+        {
+            onShow: (instance) => {
+                document.addEventListener('keydown', onEscPress);
+            },
+            onClose: (instance) => {
+                document.removeEventListener('keydown', onEscPress)
+            },
+        }
+    );
+    galleryLightBox.show();
 }
 
-function createPopUpImageMurkup(src) {
-  const popUp = basicLightbox.create(
-    `<img src="${src}" width="1280" height="800">`,
-    {
-      onShow: (popUp) => {
-        window.addEventListener("keydown", onEscClick);
-      },
-      onClose: (popUp) => {
-        window.removeEventListener("keydown", onEscClick);
-      },
-    }
-  );
-  function onEscClick(e) {
-    if (e.code === "Escape") {
-      popUp.close();
-    } else {
-      return;
-    }
-  }
+function createGalleryMarkup(items) {
+    return items.map(({ preview, original, description }) => {
+            return `<div class="gallery__item">
+                        <a class="gallery__link" href="${original}">
+                            <img
+                            class="gallery__image"
+                            src="${preview}"
+                            data-source="${original}"
+                            alt="${description}"
+                            />
+                        </a>
+                    </div>`})
+        .join('');
+}
 
-  return popUp;
+function createImageLightbox(image) {
+    return `<img src="${image.dataset["source"]}">`;
+}
+
+function onEscPress(e) {
+    if (e.code !== 'Escape') {
+        return;
+    }
+    galleryLightBox.close();
 }

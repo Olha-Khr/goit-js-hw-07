@@ -1,41 +1,22 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
-
-console.log(galleryItems);
-
-const galleryRef = document.querySelector(".gallery");
-
-const galleryMarkup = createGalleryMurkup(galleryItems);
-galleryRef.innerHTML = galleryMarkup;
-
-const gallery = new SimpleLightbox(".gallery  a", {
-  scrollZoom: false,
-  captionsData: "alt",
-  captionDelay: 250,
-});
-
-galleryRef.addEventListener("click", onGalleryImageClick);
-
-function createGalleryMurkup(gallery) {
-  return gallery
-    .map((image) => {
-      return `
-        <a class="gallery__item" href="${image.original}">
-            <img class="gallery__image" src="${image.preview}" alt="${image.description}"/>
-        </a>
-        `;
-    })
-    .join("");
+const refs = {
+    gallery: document.querySelector('.gallery'),
 }
 
-function onGalleryImageClick(e) {
-  e.preventDefault();
+refs.gallery.innerHTML = createGalleryMarkup(galleryItems);
 
-  const imageEl = e.target.nodeName;
+let gallery = new SimpleLightbox('.gallery a', {
+    caption: true,
+    captionType: 'attr',
+    captionsData: 'alt',
+    captionDelay: '250ms',
+});
 
-  if (!imageEl) {
-    return;
-  } else {
-    gallery;
-  }
+function createGalleryMarkup(items) {
+    return items.map(({ preview, original, description }) => {
+        return `<a class="gallery__item" href="${original}">
+                        <img class="gallery__image" src="${preview}" alt="${description}" />
+                    </a>`})
+        .join('')
 }
